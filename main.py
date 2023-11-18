@@ -45,19 +45,40 @@ def visualizar():
     biblioteca.close()
 
 def atualizar():
-    livro_atualizar = input("Digite o nome do livro que você deseja atualizar: ")
-    opcao_atualizar = input("O que deseja atualizar?\n1 - Título\n2 - Gênero\n3 - Autor\n4 - Preço")
-    biblioteca = open("biblioteca.txt", "+a")
-    if opcao_atualizar == 1:
-            novo_titulo = input("Digite o novo título do livro: ")
-            for linha in biblioteca:
-                separacao = linha.split(";")
-                if separacao[0] == livro_atualizar:
-                    separacao[0] == novo_titulo
-def excluir():
     pass
+def excluir():
+    os.system('cls')
+
+    livro_excluir = input("Digite o nome do livro que você deseja excluir:\n").capitalize()
+    biblioteca = open("biblioteca.txt", "r", encoding="utf8")
+    livros = biblioteca.readlines()
+    biblioteca.close()
+
+    for linha in range(len(livros)):
+        livros[linha] = livros[linha].split(";")
+
+    for i in range(len(livros)):
+        if livros[i][0] == livro_excluir:
+            livros.remove(livros[i])
+            break    
+    print(livros)
+
+
+    with open('biblioteca.txt', 'w') as nova_lista:
+        for i in range (len(livros)):
+            for name in livros[i]:
+                if name != '\n':
+                    nova_lista.writelines(name + ';')
+
+                else:
+                    nova_lista.writelines(name)
+
+
+
+
 def extrato():
     pass
+
 def main():
     while True:
         print("\n==============================================================================")
