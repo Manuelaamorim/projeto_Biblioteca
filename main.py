@@ -73,11 +73,19 @@ def excluir():
                 else:
                     nova_lista.writelines(name)
 
-
-
-
 def extrato():
-    pass
+    gastos = 0
+    biblioteca = open('biblioteca.txt', 'r', encoding = 'utf8')
+    livros = biblioteca.readlines()
+    biblioteca.close()
+
+    for linha in range(len(livros)):
+        livros[linha] = livros[linha].split(';')
+
+    for i in range (len(livros)):
+        gastos = gastos + float(livros[i][3])
+
+    print (f'Foram gastos {gastos} reais com sua biblioteca até o momento.\n')
 
 def main():
     while True:
