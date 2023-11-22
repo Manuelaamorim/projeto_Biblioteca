@@ -1,20 +1,34 @@
 import os
 os.system('cls')
 
+def decisao():
+    while True:
+        decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
+        if decisao == "Sim":
+            return True
+        elif decisao == 'Não' or decisao == 'Nao':
+            return False
+        else:
+            print("Resposta inválida.")
+
 
 def cadastro():
     os.system('cls')
-    biblioteca = open("biblioteca.txt","a", encoding="utf8")
-    titulo = input("Digite o nome do livro: ").capitalize()
-    genero = input("Selecione o gênero do livro a ser cadastrado: ").capitalize()
-    autor = input("Digite o autor do livro: ").capitalize()
-    preco = float(input("Digite o preço do livro: "))
-    biblioteca.write(f"{titulo};{genero};{autor};{preco};\n")
-    print("===============================================")
-    print("Livro cadastrado com sucesso!")
-    print("===============================================")
-
-    biblioteca.close()    
+    with open("biblioteca.txt","a", encoding="utf8") as biblioteca:
+        titulo = input("Digite o nome do livro: ").capitalize()
+        genero = input("Digite o gênero do livro a ser cadastrado: ").capitalize()
+        autor = input("Digite o autor do livro: ").capitalize()
+        review = input("O livro é bom? Conta a história de que? Você gostou? Escreva a sua opnião sobre o livro: ")
+        try:
+            preco = float(input("Digite o preço do livro: "))
+        except ValueError:
+            print("Digite com números entre os dígitos 0-9!")
+        else:
+            biblioteca.write(f"{titulo};{genero};{autor};{preco};{review};\n")
+            print("===============================================")
+            print("Livro cadastrado com sucesso!")
+            print("===============================================")
+            return decisao()    
 
 def visualizar():
     os.system('cls')
@@ -23,229 +37,116 @@ def visualizar():
     livros = biblioteca.readlines()
     if visualizar == 1:
         print("==============================================================================")
+        print(f"Livros:\n")
         for linha in livros:
             separacao = linha.split(";")
-            print(f"Livros:\n{separacao[0]} - Gênero: {separacao[1]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
+            print(f"{separacao[0]} - Gênero: {separacao[1]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
         print("==============================================================================")
         
     elif visualizar == 2:
         genero_buscar = input("Digite o gênero que você deseja visualizar: ").capitalize()
         print("==============================================================================")
-
+        vazio = True
         for linha in livros:
             separacao = linha.split(";")
             if separacao[1] == genero_buscar:
                 print(f"Livro(s) de {genero_buscar}:\n{separacao[0]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
-            else:
-                print(f"Gênero não encontrado")
+                vazio = False
+        if vazio == True:
+            print("Gênero não encontrado")
+
         print("==============================================================================")
 
     else:
-        pass
+        print("Digite apenas '1' ou '2'")
     biblioteca.close()
+    return decisao()  
 
 def atualizar():
-    os.system('cls')
-    nome = input("Digite o nome do livro que deseja atualizar: ").capitalize()
-    livro_presente = False
-    novo_conteudo =""
-    
-    with open("biblioteca.txt", "r", encoding="utf8") as arquivo:
-        conteudo = arquivo.read()
-        livros = conteudo.split("---\n")
-        for livro in livros:
-            if "Nome: " + nome in livro:
-                livro_presente = True
-                print("Atualize as informações do livro: ")
-                novo_nome = input("Digite o novo nome do livro: ").capitalize()
-                novo_autor = input("Digite o novo nome do autor: ").capitalize()
-                novo_genero = input("Digite o novo genêro do livro: ").capitalize()
-                novo_preco = float(input("Digite o novo preço do livro: "))
-                livro_atualizado = "Nome: " + novo_nome + "\n"
-                livro_atualizado = livro_atualizado + "Autor: " + novo_autor + "\n"
-                livro_atualizado = livro_atualizado + "Genêro: " + novo_genero + "\n"
-                livro_atualizado = livro_atualizado + "Preço: "  + novo_preco + "\n"
-                novo_conteudo = novo_conteudo + livro_atualizado + "\n"
 
+    with open('biblioteca.txt', "r", encoding="utf8") as file:
+        livros = file.readlines()
+    livro_atualizar = input("Digite o livro que você deseja atualizar: ").capitalize()
+    print("Atualizações: ")
+    novo_titulo = input("Digite o novo título do livro: ").capitalize()
+    novo_genero = input("Digite o novo genêro do livro: ").capitalize()
+    novo_autor = input("Digite o novo nome do autor: ").capitalize()
+    novo_preco = float(input("Digite o novo preço do livro: "))
+    novo_review = input("Digite a resenha do seu livro ").capitalize()
+    
+    with open('biblioteca.txt', 'w', encoding='utf8') as file:
+        for linha in livros:
+            separacao = linha.split(";")
+            if separacao[0] != livro_atualizar:
+                file.write(linha)
             else:
-                novo_conteudo = novo_conteudo + livro+ "---\n"
-    if livro_presente==True:
-        with open("biblioteca.txt", "w", encoding="utf8"):
-            arquivo.write(novo_conteudo)
-        print("As informações do livro foram atualizadas.")
-    else: 
-        print("Livro não encontrado.")
+                file.write((f"{novo_titulo};{novo_genero};{novo_autor};{novo_preco};{novo_review};\n"))
+                print("===============================================")
+                print("Livro cadastrado com sucesso!")
+                print("===============================================")
+
+    return decisao() 
+
 def excluir():
     os.system('cls')
 
     livro_excluir = input("Digite o nome do livro que você deseja excluir:\n").capitalize()
-    biblioteca = open("biblioteca.txt", "r", encoding="utf8")
-    livros = biblioteca.readlines()
-    biblioteca.close()
 
-    for linha in range(len(livros)):
-        livros[linha] = livros[linha].split(";")
-
-    for i in range(len(livros)):
-        if livros[i][0] == livro_excluir:
-            livros.remove(livros[i])
-            break    
-    print(livros)
-
+    with open("biblioteca.txt", "r", encoding="utf8") as biblioteca:
+        livros = biblioteca.readlines()
 
     with open('biblioteca.txt', 'w') as nova_lista:
-        for i in range (len(livros)):
-            for name in livros[i]:
-                if name != '\n':
-                    nova_lista.writelines(name + ';')
-
-                else:
-                    nova_lista.writelines(name)
+        for livro in livros:
+            temp = livro.split(';')
+            if temp[0] != livro_excluir:
+                nova_lista.write(livro)
+    return decisao()  
 
 def extrato():
     gastos = 0
-    biblioteca = open('biblioteca.txt', 'r', encoding = 'utf8')
-    livros = biblioteca.readlines()
-    biblioteca.close()
+    with open('biblioteca.txt', 'r', encoding = 'utf8') as biblioteca:
+        livros = biblioteca.readlines()
 
-    for linha in range(len(livros)):
-        livros[linha] = livros[linha].split(';')
-
-    for i in range (len(livros)):
-        gastos = gastos + float(livros[i][3])
+    for livro in livros:
+        temp = livro.split(';')
+        gastos += float(temp[3])
 
     print (f'Foram gastos {gastos} reais com sua biblioteca até o momento.\n')
+    return decisao()  
 
+primeira_vez = True
 def main():
+    global primeira_vez
     while True:
-        print("\n==============================================================================")
-        print("Seja Bem-Vindo à sua biblioteca preferida!\n1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
+        os.system('cls')
         print("==============================================================================")
-        opcoes = int(input("Digite a opção desejada: "))
-    
-        if opcoes == 1:
-            cadastro()
-            decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
-            if decisao == "sim":
-                print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
-                opcoes = int(input("Digite a opção desejada: "))
-                if opcoes == 1:
-                    cadastro()
-                elif opcoes == 2:
-                    visualizar()
-                elif opcoes == 3:
-                    atualizar()
-                elif opcoes == 4:
-                    excluir()
-                elif opcoes == 5:
-                    extrato()
-                else:
-                    print("Resposta inválida.")
-            elif decisao == 'não' or decisao == 'nao':
+        if primeira_vez == True:
+            print("Seja Bem-Vindo à sua biblioteca preferida!")
+        print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n6 - Para sair")
+        print("==============================================================================")
+        try:
+            opcoes = int(input("Digite a opção desejada: "))
+        except ValueError:
+             print("Escreva com dígitos de 1-6!")
+        else:
+            if opcoes == 1:
+                continuar = cadastro()
+            elif opcoes == 2:
+                continuar = visualizar()
+            elif opcoes == 3:
+                continuar = atualizar()
+            elif opcoes == 4:
+                continuar = excluir()
+            elif opcoes == 5:
+                continuar = extrato()
+            elif opcoes == 6:
                 break
             else:
                 print("Resposta inválida.")
-
-        elif opcoes == 2:
-            visualizar()
-            decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
-            if decisao == "sim":
-                os.system('cls')
-                print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
-                opcoes = int(input("Digite a opção desejada: "))
-                if opcoes == 1:
-                    cadastro()
-                elif opcoes == 2:
-                    visualizar()
-                elif opcoes == 3:
-                    atualizar()
-                elif opcoes == 4:
-                    excluir()
-                elif opcoes == 5:
-                    extrato()
-                else:
-                    print("Resposta inválida.")
-            elif decisao == 'não' or decisao == 'nao':
+            
+            primeira_vez = False
+            if continuar == False:
                 break
-            else:
-                print("Resposta inválida.")
-
-        elif opcoes == 3:
-            atualizar()
-            decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
-            if decisao == "sim":
-                os.system('cls')
-                print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
-                opcoes = int(input("Digite a opção desejada: "))
-                if opcoes == 1:
-                    cadastro()
-                elif opcoes == 2:
-                    visualizar()
-                elif opcoes == 3:
-                    atualizar()
-                elif opcoes == 4:
-                    excluir()
-                elif opcoes == 5:
-                    extrato()
-                else:
-                    print("Resposta inválida.")
-            elif decisao == 'não' or decisao == 'nao':
-                break
-            else:
-                print("Resposta inválida.")
-
-        elif opcoes == 4:
-            excluir()
-            decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
-            if decisao == "sim":
-                os.system('cls')
-                print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
-                opcoes = int(input("Digite a opção desejada: "))
-                if opcoes == 1:
-                    cadastro()
-                elif opcoes == 2:
-                    visualizar()
-                elif opcoes == 3:
-                    atualizar()
-                elif opcoes == 4:
-                    excluir()
-                elif opcoes == 5:
-                    extrato()
-                else:
-                    print("Resposta inválida.")
-            elif decisao == 'não' or decisao == 'nao':
-                break
-            else:
-                print("Resposta inválida.")
-
-        elif opcoes == 5:
-            extrato()
-            decisao = input("Deseja algo mais? Se sim, responda 'sim', caso contrário, digite 'não'\n").capitalize()
-            if decisao == "sim":
-                os.system('cls')
-                print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n")
-                opcoes = int(input("Digite a opção desejada: "))
-                if opcoes == 1:
-                    cadastro()
-                elif opcoes == 2:
-                    visualizar()
-                elif opcoes == 3:
-                    atualizar()
-                elif opcoes == 4:
-                    excluir()
-                elif opcoes == 5:
-                    extrato()
-                else:
-                    print("Resposta inválida.")
-            elif decisao == 'não' or decisao == 'nao':
-                break
-            else:
-                print("Resposta inválida.")
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
