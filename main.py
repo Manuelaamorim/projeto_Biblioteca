@@ -45,7 +45,36 @@ def visualizar():
     biblioteca.close()
 
 def atualizar():
-    pass
+    os.system('cls')
+    nome = input("Digite o nome do livro que deseja atualizar: ").capitalize()
+    livro_presente = False
+    novo_conteudo =""
+    
+    with open("biblioteca.txt", "r", encoding="utf8") as arquivo:
+        conteudo = arquivo.read()
+        livros = conteudo.split("---\n")
+        for livro in livros:
+            if "Nome: " + nome in livro:
+                livro_presente = True
+                print("Atualize as informações do livro: ")
+                novo_nome = input("Digite o novo nome do livro: ").capitalize()
+                novo_autor = input("Digite o novo nome do autor: ").capitalize()
+                novo_genero = input("Digite o novo genêro do livro: ").capitalize()
+                novo_preco = float(input("Digite o novo preço do livro: "))
+                livro_atualizado = "Nome: " + novo_nome + "\n"
+                livro_atualizado = livro_atualizado + "Autor: " + novo_autor + "\n"
+                livro_atualizado = livro_atualizado + "Genêro: " + novo_genero + "\n"
+                livro_atualizado = livro_atualizado + "Preço: "  + novo_preco + "\n"
+                novo_conteudo = novo_conteudo + livro_atualizado + "\n"
+
+            else:
+                novo_conteudo = novo_conteudo + livro+ "---\n"
+    if livro_presente==True:
+        with open("biblioteca.txt", "w", encoding="utf8"):
+            arquivo.write(novo_conteudo)
+        print("As informações do livro foram atualizadas.")
+    else: 
+        print("Livro não encontrado.")
 def excluir():
     os.system('cls')
 
