@@ -32,12 +32,17 @@ def cadastro():
 
 def visualizar():
     os.system('cls')
-    visualizar = int(input('Selecione como você deseja visualizar sua biblioteca:\n1 - Visualizar todos os livros\n2 - Buscar livros por gênero\n3 - Para voltar\n'))
+    visualizar = int(input('Selecione como você deseja visualizar sua biblioteca:\n1 - Visualizar todos os livros\n2 - Buscar livros por gênero\n'))
     biblioteca = open("biblioteca.txt", "r", encoding="utf8")
     livros = biblioteca.readlines()
+
+
     if visualizar == 1:
         print("==============================================================================")
         print(f"Livros:\n")
+
+        if len(livros) <= 0:
+            print("A Lista de livros está vazia!")
         for linha in livros:
             separacao = linha.split(";")
             print(f"{separacao[0]} - Gênero: {separacao[1]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
@@ -46,14 +51,18 @@ def visualizar():
     elif visualizar == 2:
         genero_buscar = input("Digite o gênero que você deseja visualizar: ").capitalize()
         print("==============================================================================")
-        vazio = True
-        for linha in livros:
-            separacao = linha.split(";")
-            if separacao[1] == genero_buscar:
-                print(f"Livro(s) de {genero_buscar}:\n{separacao[0]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
-                vazio = False
-        if vazio == True:
-            print("Gênero não encontrado")
+        if len(livros) <= 0:
+            print("A Lista de livros está vazia!")
+
+        else:
+            vazio = True
+            for linha in livros:
+                separacao = linha.split(";")
+                if separacao[1] == genero_buscar:
+                    print(f"Livro(s) de {genero_buscar}:\n{separacao[0]} - Autor: {separacao[2]} - Preço: R$ {float(separacao[3]):.2f}\n")
+                    vazio = False
+            if vazio == True:
+                print("Gênero não encontrado")
 
         print("==============================================================================")
 
@@ -123,6 +132,8 @@ def main():
         os.system('cls')
         print("==============================================================================")
         if primeira_vez == True:
+            file = open("biblioteca.txt", "a")
+            file.close()
             print("Seja Bem-Vindo à sua biblioteca preferida!")
         print("1 - Para cadastrar um novo livro \n2 - Para visualizar sua biblioteca \n3 - Para atualizar sua biblioteca\n4 - Para excluir algum livro da sua biblioteca \n5 - Para visualizar os gastos totais até o momento\n6 - Para sair")
         print("==============================================================================")
