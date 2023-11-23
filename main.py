@@ -82,7 +82,7 @@ def atualizar():
             else:
                 file.write((f"{novo_titulo};{novo_genero};{novo_autor};{novo_preco};{novo_review};\n"))
                 print("===============================================")
-                print("Livro cadastrado com sucesso!")
+                print("Livro atualizado com sucesso!")
                 print("===============================================")
 
     return decisao() 
@@ -100,6 +100,8 @@ def excluir():
             temp = livro.split(';')
             if temp[0] != livro_excluir:
                 nova_lista.write(livro)
+            else:
+                print(f"Livro excluído com sucesso!")
     return decisao()  
 
 def extrato():
